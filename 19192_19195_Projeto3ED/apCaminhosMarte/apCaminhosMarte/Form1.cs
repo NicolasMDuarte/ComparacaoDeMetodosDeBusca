@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
-    // Nome: Gabriel Villar Scalese     RA: 19171
+    // Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     public partial class FrmMapa : Form
     {
@@ -23,6 +23,8 @@ namespace apCaminhosMarte
         private GrafoBacktracking grafo;
         // Pilha contendo todos os caminhos possíveis entre duas cidades
         private PilhaLista<PilhaLista<Movimento>> caminhos;
+        int idOrigem = -1;
+        int idDestino = -1;
 
         public FrmMapa()
         {
@@ -32,8 +34,8 @@ namespace apCaminhosMarte
         // Evento click do botão que irá obter as cidades escolhidas pelo usuário e chamará o método de busca de caminhos
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            int idOrigem = GetOrigem();
-            int idDestino = GetDestino();
+            idOrigem = GetOrigem();
+            idDestino = GetDestino();
 
             if (idOrigem == -1 || idDestino == -1)
             {
@@ -88,17 +90,61 @@ namespace apCaminhosMarte
         // Método que verifica qual caminho é mais curto dentre os caminhos obtidos
         private PilhaLista<Movimento> MelhorCaminho ()
         {
+            string opcao = "";
+            string opcaoMetodo = "";
+
+            foreach(Control btn in gbCriterio.Controls)
+            {
+                RadioButton rb = (RadioButton)btn;
+                if (rb.Checked)
+                    opcao = rb.Text;
+            }
+            if (opcao == "")
+            {
+                MessageBox.Show("Selecione um critério!", "ERRO!", MessageBoxButtons.OK);
+                return null;
+            }
+
+            foreach (Control btn in gbMetodo.Controls)
+            {
+                RadioButton rb = (RadioButton)btn;
+                if (rb.Checked)
+                    opcaoMetodo = rb.Text;
+            }
+            if (opcaoMetodo == "")
+            {
+                MessageBox.Show("Selecione um método!", "ERRO!", MessageBoxButtons.OK);
+                return null;
+            }
+
             No<PilhaLista<Movimento>> umCaminho = caminhos.Inicio;
             PilhaLista<Movimento> melhorCaminho = umCaminho.Info;
-            while (umCaminho != null)
+            if (opcaoMetodo == "Recursão" || opcaoMetodo == "Pilhas")
             {
-                if (umCaminho.Prox == null)
-                    break;
+                while (umCaminho != null)
+                {
+                    if (umCaminho.Prox == null)
+                        break;
 
-                if (ObterDistancia(umCaminho.Info) > ObterDistancia(umCaminho.Prox.Info))
-                    melhorCaminho = umCaminho.Prox.Info;
+                    if (opcao == "Distância")
+                        if (ObterDistancia(umCaminho.Info) > ObterDistancia(umCaminho.Prox.Info))
+                            melhorCaminho = umCaminho.Prox.Info;
+                    if (opcao == "Custo ($)")
+                        if (ObterCusto(umCaminho.Info) > ObterCusto(umCaminho.Prox.Info))
+                            melhorCaminho = umCaminho.Prox.Info;
+                    if (opcao == "Tempo")
+                        if (ObterTempo(umCaminho.Info) > ObterTempo(umCaminho.Prox.Info))
+                            melhorCaminho = umCaminho.Prox.Info;
 
-                umCaminho = umCaminho.Prox;
+                    umCaminho = umCaminho.Prox;
+                }
+            }
+            else
+            {
+                GrafoDijkstra grafo = new GrafoDijkstra(null);
+                grafo.ConstruirGrafo(@"C:\Users\nicol\Downloads\CidadesMarteOrdenado.txt", @"C:\Users\nicol\Downloads\CaminhosEntreCidadesMarte.txt", opcaoMetodo);
+                string caminho = grafo.Caminho(idOrigem, idDestino, new ListBox());
+                MessageBox.Show(caminho);
             }
 
             return melhorCaminho;
@@ -218,6 +264,8 @@ namespace apCaminhosMarte
         private void ExibirMelhorCaminho ()
         {
             var melhorCaminho = MelhorCaminho();
+            if (melhorCaminho == null)
+                return;
             dgvMelhorCaminho.RowCount = 1;
             dgvMelhorCaminho.ColumnCount = melhorCaminho.GetQtd() + 1;
             InicializarColunas(dgvMelhorCaminho.ColumnCount, dgvMelhorCaminho);
@@ -242,8 +290,8 @@ namespace apCaminhosMarte
         // Evento load do formulário que realiza a leitura dos arquivos texto 
         private void FrmMapa_Load(object sender, EventArgs e)
         {
-            grafo = new GrafoBacktracking(@"C:\Users\gabri\Downloads\CaminhosEntreCidadesMarte.txt");
-            arvoreCidades = new ArvoreCidades(@"C:\Users\gabri\Downloads\CidadesMarte.txt");
+            grafo = new GrafoBacktracking(@"C:\Users\nicol\Downloads\CaminhosEntreCidadesMarte.txt");
+            arvoreCidades = new ArvoreCidades(@"C:\Users\nicol\Downloads\CidadesMarte.txt");
         }
 
         // Evento click do tbControl que desenha a árvore de cidades

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace apCaminhosMarte
 {
-    // Nome: Gabriel Villar Scalese     RA: 19171
+    // Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     public class NoArvore<Dado> : IComparable<NoArvore<Dado>> where Dado : IComparable<Dado>
     {
@@ -14,13 +14,26 @@ namespace apCaminhosMarte
         private NoArvore<Dado> esq;
         // Atributo que representa o ramo descendente direito
         private NoArvore<Dado> dir;
+        // Atributo que representa a altura daquele nó
+        private int altura;
+        // Atributo que representa se o nó está marcado para morrer
+        private bool estaMarcadoParaMorrer;
 
         // Construtor da classe
-        public NoArvore(Dado info, NoArvore<Dado> esq, NoArvore<Dado> dir)
+        public NoArvore(Dado info, NoArvore<Dado> esq, NoArvore<Dado> dir, int altura)
         {
             Info = info;
             Esq = esq;
             Dir = dir;
+            Altura = altura;
+        }
+
+        public NoArvore(Dado info)
+        {
+            Info = info;
+            Esq = null;
+            Dir = null;
+            Altura = 0;
         }
 
         // Propriedade do atributo info
@@ -51,6 +64,20 @@ namespace apCaminhosMarte
             {
                 dir = value;
             }
+        }
+
+        //Propriedade do atributo estaMarcadoParaMorrer
+        public bool EstaMarcadoParaMorrer 
+        { 
+            get => estaMarcadoParaMorrer;
+            set => estaMarcadoParaMorrer = value; 
+        }
+
+        //Propriedade do atributo altura
+        public int Altura 
+        { 
+            get => altura; 
+            set => altura = value; 
         }
 
         // Método de comparação de informações entre dois nós

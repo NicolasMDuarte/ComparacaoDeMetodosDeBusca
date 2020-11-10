@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
-    // Nome: Gabriel Villar Scalese     RA: 19171
+    // Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     class ArvoreCidades
     {
@@ -39,7 +39,7 @@ namespace apCaminhosMarte
                 int y = int.Parse(linha.Substring(23, 5));
 
                 var cidadeMarte = new CidadeMarte(id, nomeCidade, x, y);
-                arvoreBinaria.InserirInfo(cidadeMarte);
+                arvoreBinaria.Raiz = arvoreBinaria.InserirBalanceado(cidadeMarte, arvoreBinaria.Raiz);
             }
 
             arquivo.Close();

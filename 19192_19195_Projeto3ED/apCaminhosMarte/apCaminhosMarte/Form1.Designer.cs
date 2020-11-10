@@ -31,6 +31,15 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMapa));
             this.tbControl = new System.Windows.Forms.TabControl();
             this.tpRotas = new System.Windows.Forms.TabPage();
+            this.lblCustoTotal = new System.Windows.Forms.Label();
+            this.gbMetodo = new System.Windows.Forms.GroupBox();
+            this.rbDijkstra = new System.Windows.Forms.RadioButton();
+            this.rbRecursao = new System.Windows.Forms.RadioButton();
+            this.rbPilhas = new System.Windows.Forms.RadioButton();
+            this.gbCriterio = new System.Windows.Forms.GroupBox();
+            this.rbCusto = new System.Windows.Forms.RadioButton();
+            this.rbTempo = new System.Windows.Forms.RadioButton();
+            this.rbDistancia = new System.Windows.Forms.RadioButton();
             this.btnBuscar = new System.Windows.Forms.Button();
             this.dgvMelhorCaminho = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -57,6 +66,8 @@
             this.pbArvore = new System.Windows.Forms.PictureBox();
             this.tbControl.SuspendLayout();
             this.tpRotas.SuspendLayout();
+            this.gbMetodo.SuspendLayout();
+            this.gbCriterio.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMelhorCaminho)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCaminhos)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbMapa)).BeginInit();
@@ -80,6 +91,9 @@
             // 
             // tpRotas
             // 
+            this.tpRotas.Controls.Add(this.lblCustoTotal);
+            this.tpRotas.Controls.Add(this.gbMetodo);
+            this.tpRotas.Controls.Add(this.gbCriterio);
             this.tpRotas.Controls.Add(this.btnBuscar);
             this.tpRotas.Controls.Add(this.dgvMelhorCaminho);
             this.tpRotas.Controls.Add(this.dgvCaminhos);
@@ -98,10 +112,112 @@
             this.tpRotas.Text = "Rotas entre cidades";
             this.tpRotas.UseVisualStyleBackColor = true;
             // 
+            // lblCustoTotal
+            // 
+            this.lblCustoTotal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCustoTotal.AutoSize = true;
+            this.lblCustoTotal.Location = new System.Drawing.Point(1038, 500);
+            this.lblCustoTotal.Name = "lblCustoTotal";
+            this.lblCustoTotal.Size = new System.Drawing.Size(128, 13);
+            this.lblCustoTotal.TabIndex = 14;
+            this.lblCustoTotal.Text = "Total do menor percurso: ";
+            // 
+            // gbMetodo
+            // 
+            this.gbMetodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbMetodo.Controls.Add(this.rbDijkstra);
+            this.gbMetodo.Controls.Add(this.rbRecursao);
+            this.gbMetodo.Controls.Add(this.rbPilhas);
+            this.gbMetodo.Location = new System.Drawing.Point(1197, 115);
+            this.gbMetodo.Name = "gbMetodo";
+            this.gbMetodo.Size = new System.Drawing.Size(114, 80);
+            this.gbMetodo.TabIndex = 13;
+            this.gbMetodo.TabStop = false;
+            this.gbMetodo.Text = "Método";
+            // 
+            // rbDijkstra
+            // 
+            this.rbDijkstra.AutoSize = true;
+            this.rbDijkstra.Location = new System.Drawing.Point(6, 57);
+            this.rbDijkstra.Name = "rbDijkstra";
+            this.rbDijkstra.Size = new System.Drawing.Size(60, 17);
+            this.rbDijkstra.TabIndex = 5;
+            this.rbDijkstra.TabStop = true;
+            this.rbDijkstra.Text = "Dijkstra";
+            this.rbDijkstra.UseVisualStyleBackColor = true;
+            // 
+            // rbRecursao
+            // 
+            this.rbRecursao.AutoSize = true;
+            this.rbRecursao.Location = new System.Drawing.Point(6, 37);
+            this.rbRecursao.Name = "rbRecursao";
+            this.rbRecursao.Size = new System.Drawing.Size(71, 17);
+            this.rbRecursao.TabIndex = 4;
+            this.rbRecursao.TabStop = true;
+            this.rbRecursao.Text = "Recursão";
+            this.rbRecursao.UseVisualStyleBackColor = true;
+            // 
+            // rbPilhas
+            // 
+            this.rbPilhas.AutoSize = true;
+            this.rbPilhas.Location = new System.Drawing.Point(6, 19);
+            this.rbPilhas.Name = "rbPilhas";
+            this.rbPilhas.Size = new System.Drawing.Size(53, 17);
+            this.rbPilhas.TabIndex = 3;
+            this.rbPilhas.TabStop = true;
+            this.rbPilhas.Text = "Pilhas";
+            this.rbPilhas.UseVisualStyleBackColor = true;
+            // 
+            // gbCriterio
+            // 
+            this.gbCriterio.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbCriterio.Controls.Add(this.rbCusto);
+            this.gbCriterio.Controls.Add(this.rbTempo);
+            this.gbCriterio.Controls.Add(this.rbDistancia);
+            this.gbCriterio.Location = new System.Drawing.Point(1038, 115);
+            this.gbCriterio.Name = "gbCriterio";
+            this.gbCriterio.Size = new System.Drawing.Size(114, 80);
+            this.gbCriterio.TabIndex = 12;
+            this.gbCriterio.TabStop = false;
+            this.gbCriterio.Text = "Critério";
+            // 
+            // rbCusto
+            // 
+            this.rbCusto.AutoSize = true;
+            this.rbCusto.Location = new System.Drawing.Point(6, 57);
+            this.rbCusto.Name = "rbCusto";
+            this.rbCusto.Size = new System.Drawing.Size(67, 17);
+            this.rbCusto.TabIndex = 2;
+            this.rbCusto.TabStop = true;
+            this.rbCusto.Text = "Custo ($)";
+            this.rbCusto.UseVisualStyleBackColor = true;
+            // 
+            // rbTempo
+            // 
+            this.rbTempo.AutoSize = true;
+            this.rbTempo.Location = new System.Drawing.Point(6, 37);
+            this.rbTempo.Name = "rbTempo";
+            this.rbTempo.Size = new System.Drawing.Size(58, 17);
+            this.rbTempo.TabIndex = 1;
+            this.rbTempo.TabStop = true;
+            this.rbTempo.Text = "Tempo";
+            this.rbTempo.UseVisualStyleBackColor = true;
+            // 
+            // rbDistancia
+            // 
+            this.rbDistancia.AutoSize = true;
+            this.rbDistancia.Location = new System.Drawing.Point(6, 19);
+            this.rbDistancia.Name = "rbDistancia";
+            this.rbDistancia.Size = new System.Drawing.Size(69, 17);
+            this.rbDistancia.TabIndex = 0;
+            this.rbDistancia.TabStop = true;
+            this.rbDistancia.Text = "Distância";
+            this.rbDistancia.UseVisualStyleBackColor = true;
+            // 
             // btnBuscar
             // 
             this.btnBuscar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBuscar.Location = new System.Drawing.Point(1221, 190);
+            this.btnBuscar.Location = new System.Drawing.Point(1221, 195);
             this.btnBuscar.Name = "btnBuscar";
             this.btnBuscar.Size = new System.Drawing.Size(89, 23);
             this.btnBuscar.TabIndex = 11;
@@ -122,7 +238,7 @@
             this.dataGridViewTextBoxColumn4,
             this.dataGridViewTextBoxColumn5,
             this.dataGridViewTextBoxColumn6});
-            this.dgvMelhorCaminho.Location = new System.Drawing.Point(1037, 448);
+            this.dgvMelhorCaminho.Location = new System.Drawing.Point(1038, 419);
             this.dgvMelhorCaminho.Name = "dgvMelhorCaminho";
             this.dgvMelhorCaminho.ReadOnly = true;
             this.dgvMelhorCaminho.Size = new System.Drawing.Size(277, 71);
@@ -184,7 +300,7 @@
             this.Column4,
             this.Column5,
             this.Column6});
-            this.dgvCaminhos.Location = new System.Drawing.Point(1037, 238);
+            this.dgvCaminhos.Location = new System.Drawing.Point(1038, 219);
             this.dgvCaminhos.Name = "dgvCaminhos";
             this.dgvCaminhos.ReadOnly = true;
             this.dgvCaminhos.Size = new System.Drawing.Size(277, 181);
@@ -237,7 +353,7 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(1034, 429);
+            this.label4.Location = new System.Drawing.Point(1037, 403);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(85, 13);
             this.label4.TabIndex = 7;
@@ -247,7 +363,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(1034, 222);
+            this.label3.Location = new System.Drawing.Point(1037, 200);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(118, 13);
             this.label3.TabIndex = 5;
@@ -257,7 +373,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1035, 113);
+            this.label2.Location = new System.Drawing.Point(1193, 9);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(43, 13);
             this.label2.TabIndex = 4;
@@ -293,9 +409,9 @@
             "20 - Temperança",
             "21 - Tharsis",
             "22 - Underhill"});
-            this.lsbDestino.Location = new System.Drawing.Point(1038, 129);
+            this.lsbDestino.Location = new System.Drawing.Point(1196, 25);
             this.lsbDestino.Name = "lsbDestino";
-            this.lsbDestino.Size = new System.Drawing.Size(177, 84);
+            this.lsbDestino.Size = new System.Drawing.Size(114, 84);
             this.lsbDestino.TabIndex = 3;
             // 
             // label1
@@ -340,7 +456,7 @@
             "22 - Underhill"});
             this.lsbOrigem.Location = new System.Drawing.Point(1038, 25);
             this.lsbOrigem.Name = "lsbOrigem";
-            this.lsbOrigem.Size = new System.Drawing.Size(177, 84);
+            this.lsbOrigem.Size = new System.Drawing.Size(114, 84);
             this.lsbOrigem.TabIndex = 1;
             // 
             // pbMapa
@@ -387,6 +503,10 @@
             this.tbControl.ResumeLayout(false);
             this.tpRotas.ResumeLayout(false);
             this.tpRotas.PerformLayout();
+            this.gbMetodo.ResumeLayout(false);
+            this.gbMetodo.PerformLayout();
+            this.gbCriterio.ResumeLayout(false);
+            this.gbCriterio.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMelhorCaminho)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCaminhos)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbMapa)).EndInit();
@@ -424,6 +544,15 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.PictureBox pbArvore;
+        private System.Windows.Forms.GroupBox gbMetodo;
+        private System.Windows.Forms.RadioButton rbDijkstra;
+        private System.Windows.Forms.RadioButton rbRecursao;
+        private System.Windows.Forms.RadioButton rbPilhas;
+        private System.Windows.Forms.GroupBox gbCriterio;
+        private System.Windows.Forms.RadioButton rbCusto;
+        private System.Windows.Forms.RadioButton rbTempo;
+        private System.Windows.Forms.RadioButton rbDistancia;
+        private System.Windows.Forms.Label lblCustoTotal;
     }
 }
 

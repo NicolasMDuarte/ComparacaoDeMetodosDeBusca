@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-    // Nome: Gabriel Villar Scalese     RA: 19171
+    // Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
-    class CidadeMarte : IComparable<CidadeMarte>
+    class CidadeMarte : IComparable<CidadeMarte>, ICloneable
     {
         // Atributo que representa o id da cidade
         private int id;
@@ -27,6 +27,14 @@ namespace apCaminhosMarte
             NomeCidade = nomeCidade;
             X = x;
             Y = y;
+        }
+
+        public CidadeMarte (CidadeMarte c)
+        {
+            Id = c.id;
+            NomeCidade = c.nomeCidade;
+            X = c.x;
+            Y = c.y;
         }
 
         // Propriedade do atributo id
@@ -85,6 +93,19 @@ namespace apCaminhosMarte
         public override string ToString()
         {
             return id + " - " + nomeCidade.Trim();
+        }
+
+        public Object Clone()
+        {
+            CidadeMarte ret = null;
+            try
+            {
+                ret = new CidadeMarte(this);
+            }
+            catch (Exception)
+            {}
+
+            return ret;
         }
     }
 }

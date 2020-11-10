@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
-    // Nome: Gabriel Villar Scalese     RA: 19171
+    // Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     public class ArvoreBinaria<Dado> where Dado : IComparable<Dado>
     {
@@ -51,24 +51,6 @@ namespace apCaminhosMarte
             }
         }
 
-        // Método de inserção de informações na árvore binária
-        public void InserirInfo(Dado info)
-        {
-            if (info == null)
-                throw new Exception("Parametro invalido");
-
-            if (Existe(info))
-                throw new Exception("Informacao repetida");
-
-            if (raiz == null)
-                raiz = new NoArvore<Dado>(info, null, null);
-            else
-                if (info.CompareTo(antecessor.Info) < 0)
-                    antecessor.Esq = new NoArvore<Dado>(info, null, null);
-                else
-                    antecessor.Dir = new NoArvore<Dado>(info, null, null);
-        }
-
         // Método auxiliar que verifica a existência de uma determinada informação
         private bool Existe(Dado info)
         {
@@ -88,12 +70,12 @@ namespace apCaminhosMarte
                 }
                 else
                     if (info.CompareTo(atual.Info) == 0)
-                        return true;
-                    else
-                    {
-                        antecessor = atual;
-                        atual = atual.Dir;
-                    }
+                    return true;
+                else
+                {
+                    antecessor = atual;
+                    atual = atual.Dir;
+                }
             }
         }
 
@@ -139,6 +121,86 @@ namespace apCaminhosMarte
                 g.DrawString(Convert.ToString(raiz.Info.ToString()), new Font("Comic Sans", 10, FontStyle.Bold),
                 new SolidBrush(Color.Black), xf - 23, yf - 7);
             }
+        }
+
+        // Método que coleta a altura da árvore
+        public int getAltura(NoArvore<Dado> no)
+        {
+            if (no != null)
+                return no.Altura;
+            else
+                return -1;
+        }
+
+        // Método que insere de forma balanceada um dado na árvore
+        public NoArvore<Dado> InserirBalanceado(Dado item, NoArvore<Dado> noAtual)
+        {
+            if (noAtual == null)
+            {
+                raiz = new NoArvore<Dado>(item, null, null, 0);
+                noAtual = new NoArvore<Dado>(item);
+            }
+            else
+            {
+                if (item.CompareTo(noAtual.Info) < 0)
+                {
+                    noAtual.Esq = InserirBalanceado(item, noAtual.Esq);
+                    if (getAltura(noAtual.Esq) - getAltura(noAtual.Dir) == 2) // getAltura testa nulo
+                        if (item.CompareTo(noAtual.Esq.Info) < 0)
+                            noAtual = RotacaoSimplesComFilhoEsquerdo(noAtual);
+                        else
+                            noAtual = RotacaoDuplaComFilhoEsquerdo(noAtual);
+                }
+                else
+                if (item.CompareTo(noAtual.Info) > 0)
+                {
+                    noAtual.Dir = InserirBalanceado(item, noAtual.Dir);
+                    if (getAltura(noAtual.Dir) - getAltura(noAtual.Esq) == 2) // getAltura testa nulo
+                        if (item.CompareTo(noAtual.Dir.Info) > 0)
+                            noAtual = RotacaoSimplesComFilhoDireito(noAtual);
+                        else
+                            noAtual = RotacaoDuplaComFilhoDireito(noAtual);
+                }
+                //else ; - não faz nada, valor duplicado
+                noAtual.Altura = Math.Max(getAltura(noAtual.Esq), getAltura(noAtual.Dir)) + 1;
+            }
+            return noAtual;
+        }
+
+        // Faz uma rotação simples com o filho esquerdo
+        private NoArvore<Dado> RotacaoSimplesComFilhoEsquerdo(NoArvore<Dado> no)
+        {
+            NoArvore<Dado> temp = no.Esq;
+            no.Esq = temp.Dir;
+            temp.Dir = no;
+            no.Altura = Math.Max(getAltura(no.Esq), getAltura(no.Dir)) + 1;
+            temp.Altura = Math.Max(getAltura(temp.Esq), getAltura(no)) + 1;
+            return temp;
+        }
+
+        // Faz uma rotação simples com o filho direito
+        private NoArvore<Dado> RotacaoSimplesComFilhoDireito(NoArvore<Dado> no)
+        {
+            NoArvore<Dado> temp = no.Dir;
+            no.Dir = temp.Esq;
+            temp.Esq = no;
+            no.Altura = Math.Max(getAltura(no.Esq), getAltura(no.Dir)) + 1;
+            temp.Altura = Math.Max(getAltura(temp.Dir), getAltura(no)) + 1;
+            return temp;
+        }
+
+        // Faz uma rotação dupla com o filho esquerdo
+        private NoArvore<Dado> RotacaoDuplaComFilhoEsquerdo(NoArvore<Dado> no)
+        {
+            no.Esq = RotacaoSimplesComFilhoDireito(no.Esq);
+            return RotacaoSimplesComFilhoEsquerdo(no);
+        }
+
+        // Faz uma rotação dupla com o filho direito
+        private NoArvore<Dado> RotacaoDuplaComFilhoDireito(NoArvore<Dado> no)
+        {
+            no.Dir = RotacaoSimplesComFilhoEsquerdo(no.Dir);
+            return RotacaoSimplesComFilhoDireito(no);
         }
     }
 }

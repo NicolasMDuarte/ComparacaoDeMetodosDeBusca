@@ -9,7 +9,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace apCaminhosMarte
 {
-    // Nome: Gabriel Villar Scalese     RA: 19171
+    // Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     class ListaSimples<Dado>
     {
