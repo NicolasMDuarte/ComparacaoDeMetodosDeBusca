@@ -83,13 +83,16 @@ namespace apCaminhosMarte
         }
 
         // Método que chamará a busca de caminhos, preparando variáveis que serão utilizadas na futura busca
-        public PilhaLista<PilhaLista<Movimento>> ProcurarCaminhos (int origem, int destino)
+        public PilhaLista<PilhaLista<Movimento>> ProcurarCaminhos (int origem, int destino, string tipo)
         {
             cidadeAtual = origem;
             pilha = new PilhaLista<Movimento>();
             caminhos = new PilhaLista<PilhaLista<Movimento>>();
 
-            return ProcurarCaminhos(destino);
+            if (tipo == "Recursão")
+                return ProcurarCaminhos(destino);
+
+            return ProcurarCaminhosPilhas(destino);
         }
 
         // Método que realiza a busca de caminhos entre duas cidades
@@ -119,6 +122,38 @@ namespace apCaminhosMarte
             void AchouCaminho() // Procedimento feito ao encontrar-se um caminho
             {
                 PilhaLista<Movimento> pilhaClone = (PilhaLista<Movimento>) pilha.Clone();
+                caminhos.Empilhar(pilhaClone);
+                var movimentoAnterior = pilha.Desempilhar();
+                cidadeAtual = movimentoAnterior.Origem;
+            }
+        }
+
+        private PilhaLista<PilhaLista<Movimento>> ProcurarCaminhosPilhas(int destino)
+        {
+            for (int i = 0; i < matriz.GetLength(0); i++) // Testa todas cidades da matriz de adjacências
+            {
+                if (matriz[cidadeAtual, i] != null) // Verifica se existe ligação
+                {
+                    var movimentoObtido = new Movimento(cidadeAtual, i, matriz[cidadeAtual, i]);
+                    pilha.Empilhar(movimentoObtido);
+                    cidadeAtual = i;
+
+                    if (cidadeAtual == destino) // Um caminho foi encontrado
+                        AchouCaminho();
+                    else
+                    {
+                        ProcurarCaminhos(destino);
+                        var movimentoAnterior = pilha.Desempilhar(); // Uma saída não foi encontrada, portanto volta para uma cidade anterior
+                        cidadeAtual = movimentoAnterior.Origem;
+                    }
+                }
+            }
+
+            return caminhos;
+
+            void AchouCaminho() // Procedimento feito ao encontrar-se um caminho
+            {
+                PilhaLista<Movimento> pilhaClone = (PilhaLista<Movimento>)pilha.Clone();
                 caminhos.Empilhar(pilhaClone);
                 var movimentoAnterior = pilha.Desempilhar();
                 cidadeAtual = movimentoAnterior.Origem;

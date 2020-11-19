@@ -57,9 +57,6 @@ namespace apCaminhosMarte
             get => lc;
             set
             {
-                if (value == null)
-                    throw new Exception("Ligacao de cidade invalida");
-
                 lc = value;
             }
         }

@@ -34,6 +34,20 @@ namespace apCaminhosMarte
         // Evento click do botão que irá obter as cidades escolhidas pelo usuário e chamará o método de busca de caminhos
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
+            string opcaoMetodo = "";
+
+            foreach (Control btn in gbMetodo.Controls)
+            {
+                RadioButton rb = (RadioButton)btn;
+                if (rb.Checked)
+                    opcaoMetodo = rb.Text;
+            }
+            if (opcaoMetodo == "")
+            {
+                MessageBox.Show("Selecione um método!", "ERRO!", MessageBoxButtons.OK);
+                return;
+            }
+
             idOrigem = GetOrigem();
             idDestino = GetDestino();
 
@@ -49,7 +63,7 @@ namespace apCaminhosMarte
                 return;
             }
                 
-            caminhos = grafo.ProcurarCaminhos(idOrigem, idDestino);
+            caminhos = grafo.ProcurarCaminhos(idOrigem, idDestino, opcaoMetodo);
             if (caminhos.GetQtd() == 0)
                 MessageBox.Show("Nenhum caminho foi encontrado!");
             else
@@ -127,13 +141,13 @@ namespace apCaminhosMarte
                         break;
 
                     if (opcao == "Distância")
-                        if (ObterDistancia(umCaminho.Info) > ObterDistancia(umCaminho.Prox.Info))
+                        if (ObterDistancia(melhorCaminho) > ObterDistancia(umCaminho.Prox.Info))
                             melhorCaminho = umCaminho.Prox.Info;
                     if (opcao == "Custo ($)")
-                        if (ObterCusto(umCaminho.Info) > ObterCusto(umCaminho.Prox.Info))
+                        if (ObterCusto(melhorCaminho) > ObterCusto(umCaminho.Prox.Info))
                             melhorCaminho = umCaminho.Prox.Info;
                     if (opcao == "Tempo")
-                        if (ObterTempo(umCaminho.Info) > ObterTempo(umCaminho.Prox.Info))
+                        if (ObterTempo(melhorCaminho) > ObterTempo(umCaminho.Prox.Info))
                             melhorCaminho = umCaminho.Prox.Info;
 
                     umCaminho = umCaminho.Prox;
@@ -141,17 +155,23 @@ namespace apCaminhosMarte
             }
             else
             {
-                GrafoDijkstra grafo = new GrafoDijkstra(null);
+                GrafoDijkstra grafo = new GrafoDijkstra(this.grafo);
                 grafo.ConstruirGrafo(@"C:\Users\nicol\Downloads\CidadesMarteOrdenado.txt", @"C:\Users\nicol\Downloads\CaminhosEntreCidadesMarte.txt", opcaoMetodo);
-                string caminho = grafo.Caminho(idOrigem, idDestino, new ListBox());
-                MessageBox.Show(caminho);
+                try
+                {
+                    melhorCaminho = grafo.Caminho(idOrigem, idDestino);
+                }
+                catch(Exception)
+                {
+                    MessageBox.Show("Não há caminhos!", "ERRO!", MessageBoxButtons.OK);
+                }
             }
 
             return melhorCaminho;
         }
 
         // Método que obtém o maior de número de movimentos contido um caminho 
-        private int MaiorNumeroMovimentos ()
+        private int MaiorNumeroMovimentos()
         {
             No<PilhaLista<Movimento>> umCaminho = caminhos.Inicio;
             int qtd = 0;
