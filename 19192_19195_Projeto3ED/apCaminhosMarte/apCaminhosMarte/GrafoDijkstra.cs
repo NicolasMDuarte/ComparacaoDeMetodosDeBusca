@@ -193,6 +193,7 @@ namespace apCaminhosMarte
                 if (crit == "Tempo")
                     aux = int.Parse(linha.Substring(15, 5));
 
+
                 NovaAresta(origem, destino, aux);
             }
             caminhos.Close();
