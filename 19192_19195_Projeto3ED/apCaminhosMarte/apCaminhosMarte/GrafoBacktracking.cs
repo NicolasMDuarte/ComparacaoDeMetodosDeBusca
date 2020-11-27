@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-    // Pedro Go Iqueda RA: 19195
+    // Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     class GrafoBacktracking
     {
@@ -55,14 +55,11 @@ namespace apCaminhosMarte
             get => matriz;
             set
             {
-                if (value == null)
-                    throw new Exception("Matriz invalida");
-
-                matriz = value;
+                matriz = value ?? throw new Exception("Matriz invalida");
             }
         }
 
-        // Método que constroe um grafo a partir de um arquivo texto
+        // Método que constroi um grafo a partir de um arquivo texto
         private void ConstruirGrafo()
         {
             var arquivo = new StreamReader(nomeArquivo);
@@ -89,7 +86,7 @@ namespace apCaminhosMarte
             pilha = new PilhaLista<Movimento>();
             caminhos = new PilhaLista<PilhaLista<Movimento>>();
 
-            if (tipo == "Recursão")
+            if (tipo == "Recursão") // Se o tipo de busca escolhido for recursão
                 return ProcurarCaminhos(destino);
 
             return ProcurarCaminhosPilhas(destino);
@@ -130,81 +127,50 @@ namespace apCaminhosMarte
 
         private PilhaLista<PilhaLista<Movimento>> ProcurarCaminhosPilhas(int destino)
         {
-            int ultimoI = -1;
-            bool saiu = false;
-            bool achou = false;
-
-            do
+            int i = 0;
+            while (true)
             {
-                comeco:
-                int i = 0;
-                if (saiu)
+                while (i < matriz.GetLength(0)) // Testa todas as cidades da matriz de adjacências
                 {
-                    i = ultimoI;
-                    saiu = false;
-                }
+                    bool vaiVoltar = false;
 
-                for (; i < matriz.GetLength(0); i++) // Testa todas cidades da matriz de adjacências
-                {
                     if (matriz[cidadeAtual, i] != null) // Verifica se existe ligação
                     {
-                        var movimentoObtido = new Movimento(cidadeAtual, i, matriz[cidadeAtual, i]);
+                        vaiVoltar = true;
+
+                        var movimentoObtido = new Movimento(cidadeAtual, i, matriz[cidadeAtual, i], i);
                         pilha.Empilhar(movimentoObtido);
                         cidadeAtual = i;
 
                         if (cidadeAtual == destino) // Um caminho foi encontrado
-                        {
                             AchouCaminho();
-                            achou = true;
-                        }
                         else
-                        {
-                            //ProcurarCaminhos(destino);
-                            goto comeco;
-                        }
+                            i = 0; // Reset de índice
                     }
+
+                    if (!vaiVoltar)
+                        i++;
                 }
-                if (!achou)
+
+                if (pilha.IsVazia()) // Se a pilha está vazia
+                    return caminhos;
+                else
                 {
-                    var movimentoAnterior = pilha.Desempilhar(); // Uma saída não foi encontrada, portanto volta para uma cidade anterior
+                    var movimentoAnterior = pilha.Desempilhar(); // Não achou saída. Volta.
                     cidadeAtual = movimentoAnterior.Origem;
-                    ultimoI = movimentoAnterior.Destino;
+                    i = movimentoAnterior.OndeParou + 1;
                 }
-                saiu = true;
-                achou = false;
-            } while (true);
+            }
 
 
-
-
-
-            /*for (int i = 0; i < matriz.GetLength(0); i++) // Testa todas cidades da matriz de adjacências
-            {
-                if (matriz[cidadeAtual, i] != null) // Verifica se existe ligação
-                {
-                    var movimentoObtido = new Movimento(cidadeAtual, i, matriz[cidadeAtual, i]);
-                    pilha.Empilhar(movimentoObtido);
-                    cidadeAtual = i;
-
-                    if (cidadeAtual == destino) // Um caminho foi encontrado
-                        AchouCaminho();
-                    else
-                    {
-                        ProcurarCaminhos(destino);
-                        var movimentoAnterior = pilha.Desempilhar(); // Uma saída não foi encontrada, portanto volta para uma cidade anterior
-                        cidadeAtual = movimentoAnterior.Origem;
-                    }
-                }
-            }*/
-
-            return caminhos;
-
-            void AchouCaminho() // Procedimento feito ao encontrar-se um caminho
+            void AchouCaminho() // Ao encontrar um caminho...
             {
                 PilhaLista<Movimento> pilhaClone = (PilhaLista<Movimento>)pilha.Clone();
                 caminhos.Empilhar(pilhaClone);
                 var movimentoAnterior = pilha.Desempilhar();
                 cidadeAtual = movimentoAnterior.Origem;
+
+                i = movimentoAnterior.OndeParou + 1; // Começa a procurar a partir da próxima cidade
             }
         }
     }

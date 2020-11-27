@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-    // Pedro Go Iqueda RA: 19195
+    // Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
-    class Movimento
+    class Movimento: ICloneable
     {
         // Atributo que representa a cidade de origem
         private int origem;
@@ -16,13 +16,32 @@ namespace apCaminhosMarte
         private int destino;
         // Atributo que representa os dados do percurso
         private LigacaoCidade lc;
+        // Atributo que representa o índice da cidade onde o movimento parou
+        private int ondeParou;
 
         // Construtor da classe
         public Movimento (int origem, int destino, LigacaoCidade lc)
         {
             Origem = origem;
             Destino = destino;
-            Lc = lc;
+            Lc = (LigacaoCidade)lc.Clone();
+        }
+
+        public Movimento(int origem, int destino, LigacaoCidade lc, int ondeParou)
+        {
+            Origem = origem;
+            Destino = destino;
+            Lc = (LigacaoCidade) lc.Clone();
+            OndeParou = ondeParou;
+        }
+
+        // Construtor de cópia
+        public Movimento(Movimento mov)
+        {
+            Origem = mov.origem;
+            Destino = mov.destino;
+            Lc = (LigacaoCidade)mov.lc.Clone();
+            OndeParou = mov.ondeParou;
         }
 
         // Propriedade do atributo origem
@@ -61,6 +80,12 @@ namespace apCaminhosMarte
             }
         }
 
+        public int OndeParou 
+        { 
+            get => ondeParou; 
+            set => ondeParou = value; 
+        }
+
         // Método de comparação entre um objeto da classe e outro objeto
         public override bool Equals (Object obj)
         {
@@ -75,13 +100,16 @@ namespace apCaminhosMarte
 
             Movimento mov = (Movimento)obj;
 
-            if (origem != mov.Origem)
+            if (origem != mov.origem)
                 return false;
 
-            if (destino != mov.Destino)
+            if (destino != mov.destino)
                 return false;
 
-            if (!lc.Equals(mov.Lc))
+            if (!lc.Equals(mov.lc))
+                return false;
+
+            if (!ondeParou.Equals(mov.ondeParou))
                 return false;
 
             return true;
@@ -96,7 +124,21 @@ namespace apCaminhosMarte
         // Método que retorna o valor do objeto da classe em formato string
         public override string ToString()
         {
-            return "| O: " + origem + " | D:" + destino + " | Dados: " + lc;
+            return $"| O: {origem}| D: {destino} | Dados: {lc} | Índice: {ondeParou}";
+        }
+
+        // Método Clone para que possamos clonar uma instância da classe
+        public object Clone()
+        {
+            Movimento ret = null;
+            try
+            {
+                ret = new Movimento(this);
+            }
+            catch (Exception)
+            {}
+
+            return ret;
         }
     }
 }

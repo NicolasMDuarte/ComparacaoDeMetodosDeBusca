@@ -4,7 +4,7 @@ using System.Text;
 
 namespace apCaminhosMarte
 {
-    // Pedro Go Iqueda RA: 19195
+    // Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     public class NoArvore<Dado> : IComparable<NoArvore<Dado>> where Dado : IComparable<Dado>
     {

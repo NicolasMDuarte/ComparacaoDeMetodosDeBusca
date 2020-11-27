@@ -11,24 +11,21 @@ namespace apCaminhosMarte
 {
     class GrafoDijkstra
     {
-        //private const int NUM_VERTICES = 20;
         private Vertice[] vertices;
         private int[,] adjMatrix;
         int numVerts;
 
-        /// DIJKSTRA
         DistOriginal[] percurso;
         int infinity = int.MaxValue;
-        int verticeAtual; // global usada para indicar o vértice atualmente sendo visitado
-        long doInicioAteAtual; // global usada para ajustar menor caminho com Djikstra
-        int nTree;
+        int verticeAtual;
+        long doInicioAteAtual;
+        string crit;
 
         public GrafoDijkstra(GrafoBacktracking grafo)
         {
             vertices = new Vertice[grafo.Matriz.GetLength(0)];
             adjMatrix = new int[grafo.Matriz.GetLength(0), grafo.Matriz.GetLength(0)];
             numVerts = 0;
-            nTree = 0;
 
             for (int j = 0; j < adjMatrix.GetLength(0); j++) // zera toda a matriz
                 for (int k = 0; k < adjMatrix.GetLength(0); k++)
@@ -46,6 +43,42 @@ namespace apCaminhosMarte
         public void NovaAresta(int origem, int destino, int peso)
         {
             adjMatrix[origem, destino] = peso;
+        }
+
+        public void ConstruirGrafo(string arqCid, string arqCam, string crit)
+        {
+            this.crit = crit;
+
+            var cidades = new StreamReader(arqCid);
+            var caminhos = new StreamReader(arqCam);
+
+            while (!cidades.EndOfStream)
+            {
+                string linha = cidades.ReadLine();
+                int cidade = int.Parse(linha.Substring(0, 3));
+
+                NovoVertice(cidade.ToString());
+            }
+            cidades.Close();
+
+            while (!caminhos.EndOfStream)
+            {
+                string linha = caminhos.ReadLine();
+                int origem = int.Parse(linha.Substring(0, 3));
+                int destino = int.Parse(linha.Substring(3, 3));
+
+                int aux = 0;
+                if (crit == "Distância")
+                    aux = int.Parse(linha.Substring(6, 5));
+                if (crit == "Custo ($)")
+                    aux = int.Parse(linha.Substring(11, 4));
+                if (crit == "Tempo")
+                    aux = int.Parse(linha.Substring(15, 5));
+
+
+                NovaAresta(origem, destino, aux);
+            }
+            caminhos.Close();
         }
 
         public PilhaLista<Movimento> Caminho(int inicioDoPercurso, int finalDoPercurso)
@@ -84,28 +117,42 @@ namespace apCaminhosMarte
         public PilhaLista<Movimento> ExibirPercursos(int inicioPercurso, int fimPercurso)
         {
             int cont = 0;
-
+            var caminho = new PilhaLista<Movimento>();
+            Movimento mov;
+            bool primeira = true;
+            int pop = 0;
             Stack<string> pilha = new Stack<string>();
 
             int onde = fimPercurso;
             while (onde != inicioPercurso)
             {
-                onde = percurso[onde].verticePai;
                 pilha.Push(vertices[onde].rotulo);
+                onde = percurso[onde].verticePai;
                 cont++;
             }
 
-            var caminho = new PilhaLista<Movimento>();
-            Movimento mov;
-            bool primeira = true;
-            int pop = 0;
+            LigacaoCidade lig = new LigacaoCidade(0, 0, 0);
+            int seg = int.Parse(pilha.Peek());
+            if (crit == "Distância")
+            {
+                lig.Distancia = adjMatrix[inicioPercurso, seg];
+            }
+            if (crit == "Custo ($)")
+            {
+                lig.Custo = adjMatrix[inicioPercurso, seg];
+            }
+            if (crit == "Tempo")
+            {
+                lig.Tempo = adjMatrix[inicioPercurso, seg];
+            }
 
-            if (inicioPercurso != int.Parse(pilha.Peek()))
-                caminho.Empilhar(new Movimento(inicioPercurso, int.Parse(pilha.Peek()), null));
+            if (fimPercurso != int.Parse(pilha.Peek())) // Verificação para que possamos executar o código da linha 186 sem problemas caso necessário
+                caminho.Empilhar(new Movimento(inicioPercurso, seg, lig));
 
+            mov = new Movimento(100, 200, new LigacaoCidade(0, 0, 0));
+            // Enquanto ainda tiver dados para coletar
             while (pilha.Count != 0)
             {
-                mov = new Movimento(100, 200, null);
                 pop = int.Parse(pilha.Pop());
 
                 if (primeira)
@@ -116,8 +163,15 @@ namespace apCaminhosMarte
                 else
                 {
                     mov.Destino = pop;
-                    caminho.Empilhar(mov);
 
+                    if (crit == "Distância")
+                        mov.Lc.Distancia = adjMatrix[mov.Origem, mov.Destino];
+                    if (crit == "Custo ($)")
+                        mov.Lc.Custo = adjMatrix[mov.Origem, mov.Destino];
+                    if (crit == "Tempo")
+                        mov.Lc.Tempo = adjMatrix[mov.Origem, mov.Destino];
+
+                    caminho.Empilhar((Movimento) mov.Clone());
                     mov.Origem = pop;
                 }
             }
@@ -125,7 +179,29 @@ namespace apCaminhosMarte
             if ((cont == 1) && (percurso[fimPercurso].distancia == infinity))
                 throw new Exception("Não há caminhos!");
             else
-                caminho.Empilhar(new Movimento(pop, int.Parse(vertices[fimPercurso].rotulo), null));
+            {
+                int prim = int.Parse(vertices[inicioPercurso].rotulo);
+                seg = int.Parse(vertices[fimPercurso].rotulo);
+                lig = new LigacaoCidade(0, 0, 0);
+                if (caminho.GetQtd() == 0) // Caso o código anterior não funcione, colocamos à força
+                {
+                    if (crit == "Distância")
+                    {
+                        lig.Distancia = adjMatrix[prim, seg];
+                        caminho.Empilhar(new Movimento(prim, seg, lig));
+                    }
+                    if (crit == "Custo ($)")
+                    {
+                        lig.Custo = adjMatrix[prim, seg];
+                        caminho.Empilhar(new Movimento(prim, seg, lig));
+                    }
+                    if (crit == "Tempo")
+                    {
+                        lig.Tempo = adjMatrix[prim, seg];
+                        caminho.Empilhar(new Movimento(prim, seg, lig));
+                    }
+                }
+            }
 
             return caminho;
         }
@@ -163,40 +239,6 @@ namespace apCaminhosMarte
                         percurso[coluna].distancia = doInicioAteMargem;
                     }
                 }
-        }
-
-        public void ConstruirGrafo(string arqCid, string arqCam, string crit)
-        {
-            var cidades = new StreamReader(arqCid);
-            var caminhos = new StreamReader(arqCam);
-
-            while (!cidades.EndOfStream)
-            {
-                string linha = cidades.ReadLine();
-                int cidade = int.Parse(linha.Substring(0, 3));
-
-                NovoVertice(cidade.ToString());
-            }
-            cidades.Close();
-
-            while (!caminhos.EndOfStream)
-            {
-                string linha = caminhos.ReadLine();
-                int origem = int.Parse(linha.Substring(0, 3));
-                int destino = int.Parse(linha.Substring(3, 3));
-
-                int aux = 0;
-                if (crit == "Distância")
-                    aux = int.Parse(linha.Substring(6, 5));
-                if (crit == "Custo ($)")
-                    aux = int.Parse(linha.Substring(11, 4));
-                if (crit == "Tempo")
-                    aux = int.Parse(linha.Substring(15, 5));
-
-
-                NovaAresta(origem, destino, aux);
-            }
-            caminhos.Close();
         }
     }
 }

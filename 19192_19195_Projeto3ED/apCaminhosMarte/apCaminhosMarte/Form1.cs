@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
-    // Nome: Pedro Go Iqueda RA: 19195
+    // Nome: Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     public partial class FrmMapa : Form
     {
@@ -23,6 +23,7 @@ namespace apCaminhosMarte
         private GrafoBacktracking grafo;
         // Pilha contendo todos os caminhos possíveis entre duas cidades
         private PilhaLista<PilhaLista<Movimento>> caminhos;
+        // Variáveis que conterão o id da origem e do destino
         int idOrigem = -1;
         int idDestino = -1;
 
@@ -34,7 +35,7 @@ namespace apCaminhosMarte
         // Evento click do botão que irá obter as cidades escolhidas pelo usuário e chamará o método de busca de caminhos
         private void BtnBuscar_Click(object sender, EventArgs e)
         {
-            string opcaoMetodo = "";
+            string opcaoMetodo = ""; // Opção de método de busca
 
             foreach (Control btn in gbMetodo.Controls)
             {
@@ -42,35 +43,36 @@ namespace apCaminhosMarte
                 if (rb.Checked)
                     opcaoMetodo = rb.Text;
             }
-            if (opcaoMetodo == "")
+            if (opcaoMetodo == "") // Se não escolheu...
             {
                 MessageBox.Show("Selecione um método!", "ERRO!", MessageBoxButtons.OK);
                 return;
             }
 
+            // Coleta origem e destino
             idOrigem = GetOrigem();
             idDestino = GetDestino();
 
-            if (idOrigem == -1 || idDestino == -1)
+            if (idOrigem == -1 || idDestino == -1) // Se forem inválidas
             {
                 MessageBox.Show("Cidades inválidas");
                 return;
             }
 
-            if (idOrigem == idDestino)
+            if (idOrigem == idDestino) // Se forem iguais
             {
                 MessageBox.Show("Destino é igual à origem!");
                 return;
             }
                 
-            caminhos = grafo.ProcurarCaminhos(idOrigem, idDestino, opcaoMetodo);
-            if (caminhos.GetQtd() == 0)
+            caminhos = grafo.ProcurarCaminhos(idOrigem, idDestino, opcaoMetodo); // Procura caminhos com base no método
+            if (caminhos.GetQtd() == 0) // Se não achou
                 MessageBox.Show("Nenhum caminho foi encontrado!");
             else
                 MessageBox.Show("Número de caminhos encontrados: " + caminhos.GetQtd().ToString());
 
-            LimparDados();
-            if (caminhos.GetQtd() > 0)
+            LimparDados(); // Limpa os dados
+            if (caminhos.GetQtd() > 0) // Se achou...
             {
                 ExibirCaminhos();
                 ExibirMelhorCaminho();
@@ -104,8 +106,8 @@ namespace apCaminhosMarte
         // Método que verifica qual caminho é mais curto dentre os caminhos obtidos
         private PilhaLista<Movimento> MelhorCaminho ()
         {
-            string opcao = "";
-            string opcaoMetodo = "";
+            string opcao = ""; // Opção de critério
+            string opcaoMetodo = ""; // Opção de método
 
             foreach(Control btn in gbCriterio.Controls)
             {
@@ -133,7 +135,8 @@ namespace apCaminhosMarte
 
             No<PilhaLista<Movimento>> umCaminho = caminhos.Inicio;
             PilhaLista<Movimento> melhorCaminho = umCaminho.Info;
-            if (opcaoMetodo == "Recursão" || opcaoMetodo == "Pilhas")
+            int total = 0;
+            if (opcaoMetodo == "Recursão" || opcaoMetodo == "Pilhas") // Se for recursão ou pilhas...
             {
                 while (umCaminho != null)
                 {
@@ -153,10 +156,10 @@ namespace apCaminhosMarte
                     umCaminho = umCaminho.Prox;
                 }
             }
-            else
+            else // Se for dijkstra
             {
                 GrafoDijkstra grafo = new GrafoDijkstra(this.grafo);
-                grafo.ConstruirGrafo(@"C:\Users\nicol\Downloads\CidadesMarteOrdenado.txt", @"C:\Users\nicol\Downloads\CaminhosEntreCidadesMarte.txt", opcaoMetodo);
+                grafo.ConstruirGrafo(@"C:\Users\nicol\Downloads\CidadesMarteOrdenado.txt", @"C:\Users\nicol\Downloads\CaminhosEntreCidadesMarte.txt", opcao);
                 try
                 {
                     melhorCaminho = grafo.Caminho(idOrigem, idDestino);
@@ -166,6 +169,15 @@ namespace apCaminhosMarte
                     MessageBox.Show("Não há caminhos!", "ERRO!", MessageBoxButtons.OK);
                 }
             }
+
+            if (opcao == "Distância")
+                total = ObterDistancia(melhorCaminho);
+            if (opcao == "Custo ($)")
+                total = ObterDistancia(melhorCaminho);
+            if (opcao == "Tempo")
+                total = ObterDistancia(melhorCaminho);
+
+            lblCustoTotal.Text = $"Total do menor percurso: {total}";
 
             return melhorCaminho;
         }

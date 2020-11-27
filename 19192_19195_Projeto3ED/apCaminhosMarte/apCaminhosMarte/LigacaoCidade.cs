@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
-    // Pedro Go Iqueda RA: 19195
+    // Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
-    class LigacaoCidade
+    class LigacaoCidade : ICloneable
     {
         // Atributo que representa a distância entre duas cidades
         private int distancia;
@@ -24,6 +24,14 @@ namespace apCaminhosMarte
             Distancia = distancia;
             Tempo = tempo;
             Custo = custo;
+        }
+
+        // Construtor de cópia
+        public LigacaoCidade(LigacaoCidade lig)
+        {
+            Distancia = lig.distancia;
+            Tempo = lig.tempo;
+            Custo = lig.custo;
         }
 
         // Propriedade do atributo distancia
@@ -63,6 +71,20 @@ namespace apCaminhosMarte
 
                 custo = value;
 ;            }
+        }
+
+        // Método Clone para que possamos clonar uma instância da classe
+        public object Clone()
+        {
+            LigacaoCidade ret = null;
+            try
+            {
+                ret = new LigacaoCidade(this);
+            }
+            catch (Exception)
+            {}
+
+            return ret;
         }
 
         // Método de comparação entre um objeto da classe e outro objeto

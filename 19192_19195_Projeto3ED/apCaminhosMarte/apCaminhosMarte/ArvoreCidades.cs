@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
-    // Pedro Go Iqueda RA: 19195
+    // Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     class ArvoreCidades
     {
