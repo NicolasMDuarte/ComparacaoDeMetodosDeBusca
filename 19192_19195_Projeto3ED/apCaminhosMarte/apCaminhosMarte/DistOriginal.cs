@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace apCaminhosMarte
 {
+    // Nome: Pedro Go Iqueda RA: 19195
+    // Nome: Nícolas Maisonnette Duarte RA: 19192
+
     class DistOriginal
     {
         public long distancia;

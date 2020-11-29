@@ -13,7 +13,7 @@ using System.Windows.Forms;
 
 namespace apCaminhosMarte
 {
-    // Nome: Nome: Pedro Go Iqueda RA: 19195
+    // Nome: Pedro Go Iqueda RA: 19195
     // Nome: Nícolas Maisonnette Duarte RA: 19192
     public partial class FrmMapa : Form
     {
